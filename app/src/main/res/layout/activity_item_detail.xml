@@ -10,14 +10,14 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/app_bar_height"
+        android:layout_height="67dp"
         android:fitsSystemWindows="true"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="77dp"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
@@ -26,19 +26,33 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/detail_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="75dp"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
 
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
+
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/item_detail_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="181dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
 
+    </android.support.v4.widget.NestedScrollView>
+
+    <ToggleButton
+        android:text="Pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toggleButton"
+        android:textOn="pause"
+        android:textOff="resume"
+        android:layout_gravity="center|center"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:checked="true" />
 
 </android.support.design.widget.CoordinatorLayout>

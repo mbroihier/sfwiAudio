@@ -1,17 +1,18 @@
 package com.hswt.broihier.sfwiaudio;
 
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
+
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.appindexing.Thing;
+import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.io.File;
 
@@ -24,6 +25,27 @@ import static com.hswt.broihier.sfwiaudio.ItemDetailFragment.ARG_ITEM_ID;
  * in a {@link ItemListActivity}.
  */
 public class ItemDetailActivity extends AppCompatActivity {
+
+    private static String TAG = "ItemDetailActivity";
+    private static AudioPlayer audioPlayer = null;
+    private static ItemDetailActivity itemDetailActivity = null;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
+
+    public ItemDetailActivity () {
+        if (itemDetailActivity == null) {
+            itemDetailActivity = this;
+        } else {
+            Log.e(TAG,"itemDetailActivity is meant to be singular");
+        }
+    }
+
+    public static ItemDetailActivity getItemDetailActivity() {
+        return itemDetailActivity;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,17 +63,20 @@ public class ItemDetailActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
         String id = myIntent.getStringExtra(ARG_ITEM_ID);
 
-        Log.d("sfwiAudio","Detail Activity Received: "+id);
+        Log.d(TAG, "Detail Activity Received: " + id);
         PodCasts podInfo = new PodCasts(this.getApplicationContext());
         podInfo.openDirectory();
         String filePath = podInfo.getItem(id);
-        Log.d("sfwiAudio","full path to audio file is: "+filePath);
+        Log.d(TAG, "full path to audio file is: " + filePath);
 
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        Intent intent = new Intent();
+//        intent.setAction(android.content.Intent.ACTION_VIEW);
+//        File file = new File(filePath);
+//        intent.setDataAndType(Uri.fromFile(file),"audio/*");
+//        startActivity(intent);
+        audioPlayer = new AudioPlayer();
         File file = new File(filePath);
-        intent.setDataAndType(Uri.fromFile(file),"audio/*");
-        startActivity(intent);
+        audioPlayer.play(this.getApplicationContext(), Uri.fromFile(file));
 
 
         // savedInstanceState is non-null when there is fragment state
@@ -75,6 +100,9 @@ public class ItemDetailActivity extends AppCompatActivity {
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -87,10 +115,54 @@ public class ItemDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
+            Log.d(TAG, "Issuing stop command");
+            audioPlayer.stop();
             navigateUpTo(new Intent(this, ItemListActivity.class));
             return true;
         }
+        Log.d(TAG, "got here via " + id);
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onPause() {
+        audioPlayer.stop();
+        super.onPause();
+    }
+
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    public Action getIndexApiAction() {
+        Thing object = new Thing.Builder()
+                .setName("ItemDetail Page") // TODO: Define a title for the content shown.
+                // TODO: Make sure this auto-generated URL is correct.
+                .setUrl(Uri.parse("http://[ENTER-YOUR-URL-HERE]"))
+                .build();
+        return new Action.Builder(Action.TYPE_VIEW)
+                .setObject(object)
+                .setActionStatus(Action.STATUS_TYPE_COMPLETED)
+                .build();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client.connect();
+        AppIndex.AppIndexApi.start(client, getIndexApiAction());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        AppIndex.AppIndexApi.end(client, getIndexApiAction());
+        client.disconnect();
+    }
 }

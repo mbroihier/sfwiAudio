@@ -25,7 +25,7 @@ public class audioFiles {
         File[] files = directory.listFiles();
         Log.d(TAG,"Size: "+files.length);
         for (int i=0; i < files.length; i++){
-            Log.d("sfwiaudio","File "+i+":"+files[i].getName());
+            Log.d(TAG,"File "+i+":"+files[i].getName());
             addItem (i,files[i].getName());
         }
 
