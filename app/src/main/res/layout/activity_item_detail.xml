@@ -44,15 +44,5 @@
 
     </android.support.v4.widget.NestedScrollView>
 
-    <ToggleButton
-        android:text="Pause"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/toggleButton"
-        android:textOn="pause"
-        android:textOff="resume"
-        android:layout_gravity="center|center"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        android:checked="true" />
 
 </android.support.design.widget.CoordinatorLayout>

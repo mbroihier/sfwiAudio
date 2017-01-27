@@ -124,6 +124,9 @@ public class ItemDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void toggle() {
+        audioPlayer.toggle();
+    }
     @Override
     public void onPause() {
         audioPlayer.stop();

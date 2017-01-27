@@ -76,7 +76,7 @@ public class ItemDetailFragment extends Fragment {
                                          public void onClick(View view) {
                                              Log.d(TAG, "button pressed");
                                              ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
-                                             activityReference.onPause();
+                                             activityReference.toggle();
                                          }
                                      }
 
