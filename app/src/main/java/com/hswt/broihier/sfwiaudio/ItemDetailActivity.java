@@ -69,11 +69,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         String filePath = podInfo.getItem(id);
         Log.d(TAG, "full path to audio file is: " + filePath);
 
-//        Intent intent = new Intent();
-//        intent.setAction(android.content.Intent.ACTION_VIEW);
-//        File file = new File(filePath);
-//        intent.setDataAndType(Uri.fromFile(file),"audio/*");
-//        startActivity(intent);
         audioPlayer = new AudioPlayer();
         File file = new File(filePath);
         audioPlayer.play(this.getApplicationContext(), Uri.fromFile(file));
@@ -129,7 +124,6 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
     @Override
     public void onPause() {
-        audioPlayer.stop();
         super.onPause();
     }
 
