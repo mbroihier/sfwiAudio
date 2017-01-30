@@ -10,14 +10,15 @@
     android:orientation="vertical"
     android:paddingTop="0dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.hswt.broihier.sfwiaudio.ItemDetailFragment">
+    tools:context="com.hswt.broihier.sfwiaudio.ItemDetailFragment"
+    android:weightSum="1">
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_detail"
     style="?android:attr/textAppearanceLarge"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
     android:padding="16dp"
     android:textIsSelectable="true"
     tools:context="com.hswt.broihier.sfwiaudio.ItemDetailFragment" />
@@ -30,5 +31,13 @@ android:textOn="pause"
 android:textOff="resume"
 android:layout_gravity="center|center"
 tools:context="com.hswt.broihier.sfwiaudio.ItemDetailFragment"
-android:checked="true" />
+android:checked="true"
+    android:layout_marginBottom="32dip" />
+
+    <SeekBar
+        android:layout_height="32dp"
+        android:id="@+id/seekBar"
+        android:max="100"
+        android:layout_width="match_parent" />
+
 </LinearLayout>
