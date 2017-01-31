@@ -10,6 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.ToggleButton;
 import android.widget.TextView;
 
@@ -27,6 +28,7 @@ public class ItemDetailFragment extends Fragment {
      * represents.
      */
     private ToggleButton pause;
+    private SeekBar seekBar;
     private static final String TAG="ItemDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
 
@@ -81,6 +83,41 @@ public class ItemDetailFragment extends Fragment {
                                      }
 
             );
+        }
+        seekBar = (SeekBar) rootView.findViewById(R.id.seekBar);
+        if (seekBar == null) {
+            Log.d(TAG,"SeekBar was not found");
+        } else {
+            Log.d(TAG, "SeekBar was detected and listener is being created");
+
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+
+                private boolean personIsMoving = false;
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    Log.d(TAG,"onProgressChanged");
+                    personIsMoving = b;
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+                    Log.d(TAG,"onStartTrackingTouch");
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    Log.d(TAG,"onStopTrackingTouch");
+                    if (personIsMoving) {
+                        ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
+                        int progress = seekBar.getProgress();
+                        activityReference.slide(progress);
+                        personIsMoving = false;
+                    }
+                }
+
+            });
+
         }
         rootView.setOnTouchListener(new OnTouchListener()
         {

@@ -18,7 +18,7 @@ public class PodCasts {
 
     final String TAG="PodCasts";
 
-    public Context mContext;
+    private static Context mContext;
     private List<String> podcastNames = new ArrayList<String>();
 
     PodCasts (Context context) {
@@ -30,15 +30,24 @@ public class PodCasts {
         Log.d(TAG,"attempted path: "+path);
         File directory = new File(path);
         File[] files = directory.listFiles();
-        Log.d(TAG,"Size: "+files.length);
-        for (int i=0; i < files.length; i++){
-            podcastNames.add(i,path+"/"+files[i].getName());
-            Log.d(TAG,"File "+i+":"+files[i].getName());
+        if (files != null) {
+            Log.d(TAG, "Size: " + files.length);
+            for (int i = 0; i < files.length; i++) {
+                podcastNames.add(i, path + "/" + files[i].getName());
+                Log.d(TAG, "File " + i + ":" + files[i].getName());
+            }
+        } else {
+            podcastNames.add(0,"There are no podcast files in the podcast directory");
         }
+
     }
 
     public String getItem (String item) {
         int index = Integer.parseInt(item);
         return(podcastNames.get(index));
+    }
+
+    public static Context getContext() {
+        return mContext;
     }
 }

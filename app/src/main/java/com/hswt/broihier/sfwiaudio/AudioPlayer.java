@@ -86,17 +86,26 @@ public class AudioPlayer {
         running = true;
         if (player != null) {
             Log.d(TAG, "player was created and a start was attempted");
-        } else {
-            Log.d(TAG,"player is still null");
-        }
-        player.start();
-        player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            player.start();
+            player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
-            @Override
+                @Override
                 public void onCompletion(MediaPlayer mp) {
                     stop();
                 }
             });
+        } else {
+            Log.d(TAG,"player is still null");
+        }
+    }
+
+    public int getLocation (){
+        return player.getCurrentPosition();
+    }
+
+    public void seekPosition (int relativePosition) {
+        int newPosition = relativePosition * player.getDuration() / 100;
+        player.seekTo(newPosition);
     }
 
 }

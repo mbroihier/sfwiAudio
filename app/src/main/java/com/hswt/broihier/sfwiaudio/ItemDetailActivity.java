@@ -122,6 +122,10 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void toggle() {
         audioPlayer.toggle();
     }
+    public void slide(int location) {
+        audioPlayer.seekPosition(location);
+        Log.d(TAG, "current location is: " + location);
+    }
     @Override
     public void onPause() {
         super.onPause();

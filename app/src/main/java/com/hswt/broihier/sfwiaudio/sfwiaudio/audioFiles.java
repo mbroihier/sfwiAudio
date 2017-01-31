@@ -23,10 +23,14 @@ public class audioFiles {
         Log.d(TAG,"attempted path: "+path);
         File directory = new File(path);
         File[] files = directory.listFiles();
-        Log.d(TAG,"Size: "+files.length);
-        for (int i=0; i < files.length; i++){
-            Log.d(TAG,"File "+i+":"+files[i].getName());
-            addItem (i,files[i].getName());
+        if (files != null) {
+            Log.d(TAG,"Size: "+files.length);
+            for (int i = 0; i < files.length; i++) {
+                Log.d(TAG, "File " + i + ":" + files[i].getName());
+                addItem(i, files[i].getName());
+            }
+        } else {
+            addItem(0,"There are no podcasts in the podcast directory or you have not given the app permission to access external storage");
         }
 
     }
