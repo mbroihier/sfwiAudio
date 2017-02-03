@@ -10,4 +10,6 @@
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
     tools:context="com.hswt.broihier.sfwiaudio.ItemListActivity"
-    tools:listitem="@layout/item_list_content" />
+    tools:listitem="@layout/item_list_content"
+    android:clipToPadding="false"
+    android:clipChildren="false" />
