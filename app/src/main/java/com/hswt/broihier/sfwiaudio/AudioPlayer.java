@@ -103,6 +103,8 @@ public class AudioPlayer {
         return player.getCurrentPosition();
     }
 
+    public int getRelativeLocation () { return player.getCurrentPosition() * 100 / player.getDuration();}
+
     public void seekPosition (int relativePosition) {
         int newPosition = relativePosition * player.getDuration() / 100;
         player.seekTo(newPosition);

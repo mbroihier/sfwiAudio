@@ -127,6 +127,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         audioPlayer.seekPosition(location);
         Log.d(TAG, "current location is: " + location);
     }
+    public int getRelativePosition () { return audioPlayer.getRelativeLocation();};
     @Override
     public void onPause() {
         super.onPause();

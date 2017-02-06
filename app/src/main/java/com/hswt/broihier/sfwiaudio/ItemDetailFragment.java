@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.hswt.broihier.sfwiaudio.sfwiaudio.audioFiles;
 
+import static java.lang.Thread.sleep;
+
 /**
  * A fragment representing a single Item detail screen.
  * This fragment is either contained in a {@link ItemListActivity}
@@ -117,7 +119,20 @@ public class ItemDetailFragment extends Fragment {
                 }
 
             });
-
+            new Thread ( new Runnable() {
+                public void run () {
+                    int currentPosition = 0;
+                    while ((currentPosition = seekBar.getProgress()) < 100) {
+                        try {
+                            Thread.sleep(1000);
+                            ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
+                            seekBar.setProgress(activityReference.getRelativePosition());
+                        } catch (Exception e) {
+                            Log.e(TAG,"weird error");
+                        }
+                    }
+                }
+            }).start();
         }
         rootView.setOnTouchListener(new OnTouchListener()
         {
