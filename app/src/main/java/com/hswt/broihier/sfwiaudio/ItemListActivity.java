@@ -33,16 +33,16 @@ public class ItemListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private PodCasts podcasts;
-    private static Context mContext;
+    //private static Context mContext;
 
-    public static Context getContext() {
-        return mContext;
-    }
+    //public static Context getContext() {
+    //    return mContext;
+    //}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = this.getApplicationContext();
+        //mContext = this.getApplicationContext();
         setContentView(R.layout.activity_item_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -60,7 +60,8 @@ public class ItemListActivity extends AppCompatActivity {
             // activity should be in two-pane mode.
             mTwoPane = true;
         }
-        podcasts = new PodCasts(this.getApplicationContext());
+        //podcasts = new PodCasts(this.getApplicationContext());
+        podcasts = new PodCasts();
         podcasts.openDirectory();
     }
 

@@ -18,12 +18,12 @@ public class PodCasts {
 
     final String TAG="PodCasts";
 
-    private static Context mContext;
+    //private static Context mContext;
     private List<String> podcastNames = new ArrayList<String>();
 
-    PodCasts (Context context) {
-        mContext = context;
-    }
+    //PodCasts (Context context) {
+    //    mContext = context;
+    //}
 
     public void openDirectory () {
         String path = getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS;
@@ -47,7 +47,7 @@ public class PodCasts {
         return(podcastNames.get(index));
     }
 
-    public static Context getContext() {
-        return mContext;
-    }
+    //public static Context getContext() {
+    //    return mContext;
+    //}
 }

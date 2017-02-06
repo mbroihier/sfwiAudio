@@ -64,7 +64,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         String id = myIntent.getStringExtra(ARG_ITEM_ID);
 
         Log.d(TAG, "Detail Activity Received: " + id);
-        PodCasts podInfo = new PodCasts(this.getApplicationContext());
+        //PodCasts podInfo = new PodCasts(this.getApplicationContext());
+        PodCasts podInfo = new PodCasts();
         podInfo.openDirectory();
         String filePath = podInfo.getItem(id);
         Log.d(TAG, "full path to audio file is: " + filePath);
