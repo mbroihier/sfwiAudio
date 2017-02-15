@@ -129,8 +129,10 @@ public class ItemDetailFragment extends Fragment {
                             seekBar.setProgress(activityReference.getRelativePosition());
                         } catch (Exception e) {
                             Log.e(TAG,"weird error");
+                            break;
                         }
                     }
+                    Log.d(TAG,"finishing runnable");
                 }
             }).start();
         }
