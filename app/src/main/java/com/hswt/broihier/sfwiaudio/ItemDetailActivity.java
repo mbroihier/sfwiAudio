@@ -90,6 +90,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.d(TAG,"Issuing stop command via back button press");
+        audioPlayer.stop();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
