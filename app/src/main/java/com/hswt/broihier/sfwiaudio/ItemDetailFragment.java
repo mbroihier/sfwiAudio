@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -31,6 +32,7 @@ public class ItemDetailFragment extends Fragment {
      */
     private ToggleButton pause;
     private SeekBar seekBar;
+    private boolean tornDown = false;
     private static final String TAG="ItemDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
 
@@ -54,7 +56,8 @@ public class ItemDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                appBarLayout.setTitle("Playing...");
+                //appBarLayout.setTitle("Playing...");
+                appBarLayout.setTitle(mItem.content);
             }
         }
     }
@@ -132,7 +135,21 @@ public class ItemDetailFragment extends Fragment {
                             break;
                         }
                     }
+                    try {
+                        Thread.sleep(3000);
+                    } catch (Exception e) {
+                        Log.e(TAG,"this is even more weird");
+                    }
                     Log.d(TAG,"finishing runnable");
+                    if (!tornDown) {
+                        Log.d(TAG,"popping backstack");
+                        ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
+                        activityReference.popUp();
+                        FragmentManager fm = getFragmentManager();
+                        fm.popBackStack();
+                    }
+
+
                 }
             }).start();
         }
@@ -149,4 +166,10 @@ public class ItemDetailFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG,"detailed fragment is going away");
+        tornDown = true;
+    }
 }

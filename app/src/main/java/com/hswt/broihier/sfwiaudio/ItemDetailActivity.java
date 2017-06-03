@@ -1,5 +1,6 @@
 package com.hswt.broihier.sfwiaudio;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -31,6 +32,9 @@ public class ItemDetailActivity extends AppCompatActivity {
             itemDetailActivity = this;
         } else {
             Log.e(TAG,"itemDetailActivity is meant to be singular");
+            for (StackTraceElement s : Thread.currentThread().getStackTrace()){
+                Log.e(TAG,""+s);
+            }
         }
     }
 
@@ -85,15 +89,24 @@ public class ItemDetailActivity extends AppCompatActivity {
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
+                    .addToBackStack("Detail")
                     .commit();
         }
+    }
+
+    public void popUp() {
+        Log.d(TAG,"fragment wants to navigate up");
+        navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        Log.d(TAG,"Issuing stop command via back button press");
-        audioPlayer.stop();
+        if (audioPlayer.playerStatus()) {
+            Log.d(TAG,"Issuing stop command via back button press");
+            audioPlayer.stop();
+        }
+        popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
     @Override
@@ -106,9 +119,11 @@ public class ItemDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            Log.d(TAG, "Issuing stop command");
-            audioPlayer.stop();
-            navigateUpTo(new Intent(this, ItemListActivity.class));
+            if (audioPlayer.playerStatus()) {
+                Log.d(TAG, "Issuing stop command");
+                audioPlayer.stop();
+            }
+            popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
             return true;
         }
         Log.d(TAG, "got here via " + id);
@@ -127,6 +142,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG,"onPause");
     }
 
 
@@ -137,9 +153,14 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onContentChanged() {
+        super.onContentChanged();
+        Log.d(TAG,"onContentChanged");
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
-
     }
 
 }

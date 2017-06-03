@@ -91,6 +91,7 @@ public class AudioPlayer {
 
                 @Override
                 public void onCompletion(MediaPlayer mp) {
+                    Log.d(TAG,"media player completed");
                     stop();
                 }
             });
@@ -108,6 +109,10 @@ public class AudioPlayer {
     public void seekPosition (int relativePosition) {
         int newPosition = relativePosition * player.getDuration() / 100;
         player.seekTo(newPosition);
+    }
+
+    public boolean playerStatus() {
+        return player != null;
     }
 
 }
