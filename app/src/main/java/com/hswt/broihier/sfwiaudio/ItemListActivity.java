@@ -27,17 +27,6 @@ import java.util.List;
  */
 public class ItemListActivity extends AppCompatActivity {
 
-    /**
-     * Whether or not the activity is in two-pane mode, i.e. running on a tablet
-     * device.
-     */
-    private boolean mTwoPane;
-    private PodCasts podcasts;
-    //private static Context mContext;
-
-    //public static Context getContext() {
-    //    return mContext;
-    //}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,16 +42,6 @@ public class ItemListActivity extends AppCompatActivity {
         assert recyclerView != null;
         setupRecyclerView((RecyclerView) recyclerView);
 
-        if (findViewById(R.id.item_detail_container) != null) {
-            // The detail container view will be present only in the
-            // large-screen layouts (res/values-w900dp).
-            // If this view is present, then the
-            // activity should be in two-pane mode.
-            mTwoPane = true;
-        }
-        //podcasts = new PodCasts(this.getApplicationContext());
-        podcasts = new PodCasts();
-        podcasts.openDirectory();
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
@@ -94,21 +73,12 @@ public class ItemListActivity extends AppCompatActivity {
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mTwoPane) {
-                        Bundle arguments = new Bundle();
-                        arguments.putString(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-                        ItemDetailFragment fragment = new ItemDetailFragment();
-                        fragment.setArguments(arguments);
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.item_detail_container, fragment)
-                                .commit();
-                    } else {
-                        Context context = v.getContext();
-                        Intent intent = new Intent(context, ItemDetailActivity.class);
-                        intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, ItemDetailActivity.class);
+                    intent.putExtra(ItemDetailFragment.ARG_ITEM_ID, holder.mItem.id);
 
-                        context.startActivity(intent);
-                    }
+                    context.startActivity(intent);
+
                 }
             });
         }

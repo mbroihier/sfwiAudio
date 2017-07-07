@@ -80,13 +80,14 @@ public class AudioPlayer {
      * }
      * </pre>
      */
-    public void play (Context c, Uri uri) {
+    public void play (Context c, Uri uri, int position) {
         stop();
         player = MediaPlayer.create(c, uri);
         running = true;
         if (player != null) {
             Log.d(TAG, "player was created and a start was attempted");
             player.start();
+            seekPosition(position);
             player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
                 @Override

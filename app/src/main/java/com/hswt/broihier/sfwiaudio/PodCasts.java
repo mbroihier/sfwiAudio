@@ -4,6 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,16 +17,16 @@ import static android.os.Environment.getExternalStorageDirectory;
  * Created by broihier on 12/11/16.
  */
 
-public class PodCasts {
+public class PodCasts implements Serializable {
 
     final String TAG="PodCasts";
 
-    //private static Context mContext;
     private List<String> podcastNames = new ArrayList<String>();
+    private int playing = 0;
+    private int progress = 0;
 
-    //PodCasts (Context context) {
-    //    mContext = context;
-    //}
+    public PodCasts() {
+    }
 
     public void openDirectory () {
         String path = getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS;
@@ -32,8 +35,10 @@ public class PodCasts {
         File[] files = directory.listFiles();
         if (files != null) {
             Log.d(TAG, "Size: " + files.length);
+            podcastNames.removeAll(podcastNames);
             for (int i = 0; i < files.length; i++) {
-                podcastNames.add(i, path + "/" + files[i].getName());
+                if (files[i].getName().equals("state.bin")) continue;
+                podcastNames.add(path + "/" + files[i].getName());
                 Log.d(TAG, "File " + i + ":" + files[i].getName());
             }
         } else {
@@ -47,7 +52,47 @@ public class PodCasts {
         return(podcastNames.get(index));
     }
 
-    //public static Context getContext() {
-    //    return mContext;
-    //}
+    public int getPlaying() {
+        return playing;
+    }
+
+    public void setPlaying(int playing) {
+        this.playing = playing;
+    }
+
+    public int getProgress() {
+        return progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        PodCasts podCasts = (PodCasts) o;
+
+        if (playing != podCasts.playing) return false;
+        return podcastNames.equals(podCasts.podcastNames);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = podcastNames.hashCode();
+        result = 31 * result + playing;
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "PodCasts{" +
+                "podcastNames=" + podcastNames +
+                ", playing=" + playing +
+                ", progress=" + progress +
+                '}';
+    }
 }

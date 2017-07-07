@@ -25,9 +25,11 @@ public class audioFiles {
         File[] files = directory.listFiles();
         if (files != null) {
             Log.d(TAG,"Size: "+files.length);
+            int storageIndex = 0;
             for (int i = 0; i < files.length; i++) {
+                if (files[i].getName().equals("state.bin")) continue;
                 Log.d(TAG, "File " + i + ":" + files[i].getName());
-                addItem(i, files[i].getName());
+                addItem(storageIndex++, files[i].getName());
             }
         } else {
             addItem(0,"There are no podcasts in the podcast directory or you have not given the app permission to access external storage");
