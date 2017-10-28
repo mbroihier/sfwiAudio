@@ -31,6 +31,9 @@ public class audioFiles {
                 Log.d(TAG, "File " + i + ":" + files[i].getName());
                 addItem(storageIndex++, files[i].getName());
             }
+            if (storageIndex == 0) {
+                addItem(0,"There are no podcasts in the podcast directory");
+            }
         } else {
             addItem(0,"There are no podcasts in the podcast directory or you have not given the app permission to access external storage");
         }
