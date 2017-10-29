@@ -101,18 +101,61 @@ public class AudioPlayer {
         }
     }
 
+    /**
+     *     @return position within the podcast
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * get the position of the player and return it;
+     * }
+     * </pre>
+     */
     public int getLocation (){
         return player.getCurrentPosition();
     }
 
+    /**
+     *     @return relative position within the podcast (0-100%)
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * get the position of the player divide it by the total length of the podcast and return the percentage;
+     * }
+     * </pre>
+     */
     public int getRelativeLocation () { return player.getCurrentPosition() * 100 / player.getDuration();}
 
+    /**
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * using the relative position of the progress bar, seek to the same position within the podcast;
+     * }
+     * </pre>
+     */
     public void seekPosition (int relativePosition) {
         relativePosition = Math.min(98, relativePosition);
         int newPosition = relativePosition * player.getDuration() / 100;
         player.seekTo(newPosition);
     }
 
+    /**
+     *     @return true if the podcast is still playing
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * if player is not null, then it is still playing;
+     * }
+     * </pre>
+     */
     public boolean playerStatus() {
         return player != null;
     }

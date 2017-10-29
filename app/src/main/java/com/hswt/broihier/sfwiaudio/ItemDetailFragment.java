@@ -20,16 +20,10 @@ import com.hswt.broihier.sfwiaudio.sfwiaudio.audioFiles;
 import static java.lang.Thread.sleep;
 
 /**
- * A fragment representing a single Item detail screen.
- * This fragment is either contained in a {@link ItemListActivity}
- * in two-pane mode (on tablets) or a {@link ItemDetailActivity}
- * on handsets.
+ * Created by Mark Broihier 1/25/2017
  */
 public class ItemDetailFragment extends Fragment {
-    /**
-     * The fragment argument representing the item ID that this fragment
-     * represents.
-     */
+
     private ToggleButton pause;
     private SeekBar seekBar;
     private boolean tornDown = false;
@@ -39,12 +33,25 @@ public class ItemDetailFragment extends Fragment {
     private static audioFiles.PodCastItem mItem;
 
     /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
+     * Constructor
+     *
      */
     public ItemDetailFragment() {
     }
 
+    /**
+     * executed in response to onCreate of the fragment
+     *
+     * @param savedInstanceState bundle
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * set title;
+     * }
+     * </pre>
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,12 +63,30 @@ public class ItemDetailFragment extends Fragment {
             Activity activity = this.getActivity();
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
-                //appBarLayout.setTitle("Playing...");
                 appBarLayout.setTitle(mItem.content);
             }
         }
     }
 
+    /**
+     * in response to view creation
+     *
+     * @param inflater layout inflater
+     * @param container view group
+     * @param savedInstanceState bundle
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * inflate new menu;
+     * fill in titles;
+     * set handler for PAUSE/RESUME button;
+     * set handlers for progress bar;
+     * start background thread monitoring progress bar
+     * }
+     * </pre>
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -160,8 +185,6 @@ public class ItemDetailFragment extends Fragment {
                 return false;
             }
         });
-
-
 
         return rootView;
     }

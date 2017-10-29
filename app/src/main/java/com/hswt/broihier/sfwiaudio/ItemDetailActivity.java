@@ -22,6 +22,9 @@ import static com.hswt.broihier.sfwiaudio.ItemDetailFragment.ARG_ITEM_ID;
 import static android.os.Environment.DIRECTORY_PODCASTS;
 import static android.os.Environment.getExternalStorageDirectory;
 
+/**
+ * Created by Mark Broihier
+ */
 public class ItemDetailActivity extends AppCompatActivity {
 
     private static String TAG = "ItemDetailActivity";
@@ -31,6 +34,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     private FileInputStream input = null;
     private static PodCasts podInfo = new PodCasts();
 
+    /**
+     * constructor
+     */
     public ItemDetailActivity() {
         if (itemDetailActivity == null) {
             itemDetailActivity = this;
@@ -42,10 +48,34 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * getter activity reference
+     *
+     * @return detailed information
+     */
     public static ItemDetailActivity getItemDetailActivity() {
         return itemDetailActivity;
     }
 
+    /**
+     * in response to OnCreate
+     * @param savedInstanceState
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * when activity is created, get the argument item ID and process it by ....
+     * creating a podcast information object and setting the current playing index and position;
+     * attempting to open the last playing state file;
+     * if that file exists and it is playing the same podcast {
+     *     set the play position to the one recorded in the file - this is where the last pause occurred;
+     * }
+     * write out a new playing state file;
+     * start the detailed fragment that handles the user interface for playing the selected podcast;
+     * }
+     * </pre>
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,16 +135,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         File file = new File(filePath);
         audioPlayer.play(this.getApplicationContext(), Uri.fromFile(file), position);
 
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -133,6 +153,20 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * pop back to the list view that started this activity
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * if the player is playing {
+     *     stop the player;
+     * }
+     * go back to previous menu in the hierarchy
+     * }
+     * </pre>
+     */
     public void popUp() {
         Log.d(TAG, "fragment wants to navigate up");
         if (audioPlayer.playerStatus()) {
@@ -142,22 +176,40 @@ public class ItemDetailActivity extends AppCompatActivity {
         navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
+    /**
+     * respond to onBackPressed
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * call popUP;
+     * }
+     * </pre>
+     */
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
+    /**
+     * respond to onOptionsItemSelected (respond to home key press)
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * if home key {
+     *     popUP;
+     * }
+     * }
+     * </pre>
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            // This ID represents the Home or Up button. In the case of this
-            // activity, the Up button is shown. For
-            // more details, see the Navigation pattern on Android Design:
-            //
-            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
-            //
             popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
             return true;
         }
@@ -166,6 +218,18 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * PAUSE/RESUME was hit within the fragment - control the audio player running in this activity
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * toggle the audio player state;
+     * update the podcast location information;
+     * }
+     * </pre>
+     */
     public void toggle() {
 
         audioPlayer.toggle();
@@ -181,16 +245,34 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Proccess slider motion
+     *
+     * @param location location to move podcast to
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * move the audio player to the new location;
+     * }
+     * </pre>
+     */
     public void slide(int location) {
         audioPlayer.seekPosition(location);
         Log.d(TAG, "current location is: " + location);
     }
 
+    /**
+     * getter for relative position
+     * @return relative position of the podcast (0-100%)
+     *
+     */
+
     public int getRelativePosition() {
         return audioPlayer.getRelativeLocation();
     }
 
-    ;
 
     @Override
     public void onPause() {

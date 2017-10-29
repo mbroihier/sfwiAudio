@@ -19,20 +19,29 @@ import com.hswt.broihier.sfwiaudio.sfwiaudio.audioFiles;
 import java.util.List;
 
 /**
- * An activity representing a list of Items. This activity
- * has different presentations for handset and tablet-size devices. On
- * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link ItemDetailActivity} representing
- * item details. On tablets, the activity presents the list of items and
- * item details side-by-side using two vertical panes.
+ * Created by Mark Broihier on 1/25/2017
  */
 public class ItemListActivity extends AppCompatActivity {
 
     private final String TAG = "ItemListActivity";
+    /**
+     * in response to activity creation
+     *
+     * @param savedInstanceState bundle
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * setup tool bar;
+     * setup recycler;
+     * }
+     * </pre>
+     */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //mContext = this.getApplicationContext();
         setContentView(R.layout.activity_item_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -45,6 +54,17 @@ public class ItemListActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * in response to onStart
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * refresh the podcast list;
+     * }
+     * </pre>
+     */
     @Override
     protected void onStart() {
         super.onStart();
