@@ -118,6 +118,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
+            Log.i(TAG, "Starting detailed item fragment with fragment manager");
             Bundle arguments = new Bundle();
             arguments.putString(ARG_ITEM_ID,
                     getIntent().getStringExtra(ARG_ITEM_ID));
@@ -127,21 +128,23 @@ public class ItemDetailActivity extends AppCompatActivity {
                     .add(R.id.item_detail_container, fragment)
                     .addToBackStack("Detail")
                     .commit();
+        } else {
+            Log.e(TAG, "savedInstanceState should have been null in this design");
         }
     }
 
     public void popUp() {
         Log.d(TAG, "fragment wants to navigate up");
+        if (audioPlayer.playerStatus()) {
+            Log.d(TAG, "Issuing stop command via back button press");
+            audioPlayer.stop();
+        }
         navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        if (audioPlayer.playerStatus()) {
-            Log.d(TAG, "Issuing stop command via back button press");
-            audioPlayer.stop();
-        }
         popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
     }
 
@@ -155,10 +158,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            if (audioPlayer.playerStatus()) {
-                Log.d(TAG, "Issuing stop command");
-                audioPlayer.stop();
-            }
             popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
             return true;
         }
@@ -199,7 +198,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         Log.d(TAG, "onPause");
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
@@ -215,6 +213,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        itemDetailActivity = null;
+        Log.d(TAG, "onStop");
     }
 
 }

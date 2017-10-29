@@ -36,7 +36,7 @@ public class ItemDetailFragment extends Fragment {
     private static final String TAG="ItemDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
 
-    private audioFiles.PodCastItem mItem;
+    private static audioFiles.PodCastItem mItem;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the

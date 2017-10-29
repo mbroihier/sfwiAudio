@@ -19,10 +19,14 @@ public class audioFiles {
 
     private static final String TAG="audioFiles";
     static {
+        refreshPodcastList();
+    }
+    public static void refreshPodcastList() {
         String path = getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS;
-        Log.d(TAG,"attempted path: "+path);
+        Log.d(TAG,"from within refreshPodcastList - attempted path: "+path);
         File directory = new File(path);
         File[] files = directory.listFiles();
+        emptyItems();
         if (files != null) {
             Log.d(TAG,"Size: "+files.length);
             int storageIndex = 0;
@@ -37,15 +41,17 @@ public class audioFiles {
         } else {
             addItem(0,"There are no podcasts in the podcast directory or you have not given the app permission to access external storage");
         }
-
     }
-
     private static void addItem(int id, String item){
         PodCastItem fullitem = new PodCastItem(id, item,"");
         ITEMS.add(fullitem);
         ITEM_MAP.put(fullitem.id, fullitem);
     }
 
+    private static void emptyItems(){
+        ITEMS.clear();
+        ITEM_MAP.clear();
+    }
 
     public static class PodCastItem {
         public final String id;

@@ -41,6 +41,9 @@ public class PodCasts implements Serializable {
                 podcastNames.add(path + "/" + files[i].getName());
                 Log.d(TAG, "File " + i + ":" + files[i].getName());
             }
+            if (podcastNames.size() == 0) {
+                podcastNames.add(0,"There are no podcast files in the podcast directory");
+            }
         } else {
             podcastNames.add(0,"There are no podcast files in the podcast directory");
         }
@@ -49,7 +52,11 @@ public class PodCasts implements Serializable {
 
     public String getItem (String item) {
         int index = Integer.parseInt(item);
-        return(podcastNames.get(index));
+        String fileName = "Undefined";
+        if (index < podcastNames.size()) {
+            fileName = podcastNames.get(index);
+        }
+        return(fileName);
     }
 
     public int getPlaying() {
