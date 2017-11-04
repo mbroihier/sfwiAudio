@@ -26,9 +26,9 @@ public class ItemDetailFragment extends Fragment {
 
     private ToggleButton pause;
     private SeekBar seekBar;
-    private boolean tornDown = false;
     private static final String TAG="ItemDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
+    private String cameFrom = "";
 
     private static audioFiles.PodCastItem mItem;
 
@@ -66,6 +66,7 @@ public class ItemDetailFragment extends Fragment {
                 appBarLayout.setTitle(mItem.content);
             }
         }
+        cameFrom = "onCreate";
     }
 
     /**
@@ -90,7 +91,7 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.d(TAG,"creating detailed view");
+        Log.d(TAG,"creating detailed view - came from: " + cameFrom);
         View rootView = inflater.inflate(R.layout.item_detail, container, false);
 
         if (mItem != null) {
@@ -155,6 +156,7 @@ public class ItemDetailFragment extends Fragment {
                             Thread.sleep(1000);
                             ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
                             seekBar.setProgress(activityReference.getRelativePosition());
+
                         } catch (Exception e) {
                             Log.e(TAG,"weird error");
                             break;
@@ -165,15 +167,9 @@ public class ItemDetailFragment extends Fragment {
                     } catch (Exception e) {
                         Log.e(TAG,"this is even more weird");
                     }
-                    Log.d(TAG,"finishing runnable");
-                    if (!tornDown) {
-                        Log.d(TAG,"popping backstack");
-                        ItemDetailActivity activityReference = ItemDetailActivity.getItemDetailActivity();
-                        activityReference.popUp();
-                        FragmentManager fm = getFragmentManager();
-                        fm.popBackStack();
-                    }
-
+                    Log.d(TAG,"finishing runnable ");
+                    pause.setOnClickListener(null);
+                    seekBar.setOnSeekBarChangeListener(null);
 
                 }
             }).start();
@@ -192,7 +188,13 @@ public class ItemDetailFragment extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-        Log.d(TAG,"detailed fragment is going away");
-        tornDown = true;
+        Log.d(TAG,"onStop - detailed fragment is going away");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG,"onDestroy - detailed fragment is going away");
+        cameFrom = "onDestroy";
     }
 }

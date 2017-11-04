@@ -8,19 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
-import android.view.MenuItem;
 
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 
 import static com.hswt.broihier.sfwiaudio.ItemDetailFragment.ARG_ITEM_ID;
-import static android.os.Environment.DIRECTORY_PODCASTS;
-import static android.os.Environment.getExternalStorageDirectory;
 
 /**
  * Created by Mark Broihier
@@ -30,8 +22,6 @@ public class ItemDetailActivity extends AppCompatActivity {
     private static String TAG = "ItemDetailActivity";
     private static AudioPlayer audioPlayer = null;
     private static ItemDetailActivity itemDetailActivity = null;
-    private FileOutputStream output = null;
-    private FileInputStream input = null;
     private static PodCasts podInfo = new PodCasts();
 
     /**
@@ -45,6 +35,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             for (StackTraceElement s : Thread.currentThread().getStackTrace()) {
                 Log.e(TAG, "" + s);
             }
+            itemDetailActivity = this;
         }
     }
 
@@ -101,38 +92,21 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         Log.d(TAG,"updated podInfo: "+podInfo.toString());
 
-        try {
-            input = new FileInputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
-            PodCasts oldPodInfo;
-            ObjectInputStream in = new ObjectInputStream(input);
-            oldPodInfo = (PodCasts) in.readObject();
-            Log.d(TAG, oldPodInfo.toString()+"\n"+podInfo.toString());
-
-            if (oldPodInfo.getPlaying() == Integer.parseInt(id) && podInfo.getItem(""+podInfo.getPlaying()).equals(oldPodInfo.getItem(""+oldPodInfo.getPlaying()))) {
-                position = oldPodInfo.getProgress();
-            }
-            in.close();
-        } catch (IOException e) {
-            Log.e(TAG, "file read for state.bin failed: " + e);
-        } catch (ClassNotFoundException e) {
-            Log.e(TAG, "error in class definition: " + e);
+        audioPlayer = audioPlayer.getAudioPlayerReference();
+        PodCasts oldPodInfo = audioPlayer.readPodcastInfo(Integer.parseInt(id));
+        if (oldPodInfo.getPlaying() == Integer.parseInt(id) && podInfo.getItem(""+podInfo.getPlaying()).equals(oldPodInfo.getItem(""+oldPodInfo.getPlaying()))) {
+            position = oldPodInfo.getProgress();
+        } else {
+            audioPlayer.writePodcastInfo(podInfo);
         }
 
-        try {
-            output = new FileOutputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
-            ObjectOutputStream out = new ObjectOutputStream(output);
-            podInfo.setProgress(position);
-            out.writeObject(podInfo);
-            out.close();
-            Log.d(TAG,"podInfo updated after looking at old: "+podInfo.toString());
-        } catch (IOException e) {
-            Log.e(TAG, "file write failed: " + e);
-        }
         String filePath = podInfo.getItem(id);
         Log.d(TAG, "full path to audio file is: " + filePath);
 
-        audioPlayer = new AudioPlayer();
         File file = new File(filePath);
+        if (audioPlayer.playerStatus()) { // if something is playing, stop it
+            audioPlayer.stop();
+        }
         audioPlayer.play(this.getApplicationContext(), Uri.fromFile(file), position);
 
         if (savedInstanceState == null) {
@@ -146,7 +120,6 @@ public class ItemDetailActivity extends AppCompatActivity {
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.item_detail_container, fragment)
-                    .addToBackStack("Detail")
                     .commit();
         } else {
             Log.e(TAG, "savedInstanceState should have been null in this design");
@@ -170,10 +143,25 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void popUp() {
         Log.d(TAG, "fragment wants to navigate up");
         if (audioPlayer.playerStatus()) {
-            Log.d(TAG, "Issuing stop command via back button press");
+            Log.d(TAG, "calling audio player stop");
+            recordPosition();
             audioPlayer.stop();
         }
-        navigateUpTo(new Intent(this, ItemListActivity.class));
+    }
+
+    /**
+     * pop back to the list view that started this activity, but don't stop audio
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * go back to previous menu in the hierarchy
+     * }
+     * </pre>
+     */
+    public void popUpButContinueAudio() {
+        Log.d(TAG, "fragment wants to navigate up");
     }
 
     /**
@@ -190,31 +178,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
-    }
-
-    /**
-     * respond to onOptionsItemSelected (respond to home key press)
-     *
-     * <pre>
-     *
-     * {@code
-     * Pseudo code:
-     * if home key {
-     *     popUP;
-     * }
-     * }
-     * </pre>
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == android.R.id.home) {
-            popUp(); //navigateUpTo(new Intent(this, ItemListActivity.class));
-            return true;
-        }
-        Log.d(TAG, "got here via " + id);
-        return super.onOptionsItemSelected(item);
+        Log.d(TAG, "Issuing stop command via back button press");
+        popUp();
     }
 
 
@@ -231,18 +196,26 @@ public class ItemDetailActivity extends AppCompatActivity {
      * </pre>
      */
     public void toggle() {
-
         audioPlayer.toggle();
-        try { // store current location
-            output = new FileOutputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
-            podInfo.setProgress(audioPlayer.getRelativeLocation());
-            ObjectOutputStream out = new ObjectOutputStream(output);
-            out.writeObject(podInfo);
-            out.close();
-            Log.d(TAG,"podInfo being updated in toggle: "+podInfo.toString());
-        } catch (IOException e) {
-            Log.e(TAG, "file write failed: " + e);
-        }
+        recordPosition();
+    }
+
+    /**
+     * record position
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * update the podcast location information;
+     * }
+     * </pre>
+     */
+    public void recordPosition() {
+
+        podInfo.setProgress(audioPlayer.getRelativeLocation());
+        audioPlayer.writePodcastInfo(podInfo);
+
     }
 
     /**
@@ -261,6 +234,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void slide(int location) {
         audioPlayer.seekPosition(location);
         Log.d(TAG, "current location is: " + location);
+        recordPosition();
     }
 
     /**
@@ -278,6 +252,13 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "onPause");
+        Log.d(TAG, "in this path, attempting to retain fragment - audio is still playing");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume");
     }
 
     @Override
@@ -295,7 +276,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
-        itemDetailActivity = null;
+        //itemDetailActivity = null;
         Log.d(TAG, "onStop");
     }
 

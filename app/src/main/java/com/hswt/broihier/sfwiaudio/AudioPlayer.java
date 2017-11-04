@@ -5,7 +5,15 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URI;
+
+import static android.os.Environment.DIRECTORY_PODCASTS;
+import static android.os.Environment.getExternalStorageDirectory;
 
 /**
  * Created by broihier on 1/25/17.
@@ -16,7 +24,23 @@ public class AudioPlayer {
     private MediaPlayer player = null;
     private boolean running = false;
 
+    private static AudioPlayer audioPlayerReference = new AudioPlayer();
+
     private final String TAG = "AudioPlayer";
+
+    private PodCasts podcastInfo;
+
+    private AudioPlayer() {
+        if (audioPlayerReference == null) {
+            audioPlayerReference = this;
+        }
+        PodCasts podcastInfo = new PodCasts();
+    }
+
+    public static AudioPlayer getAudioPlayerReference() {
+        return audioPlayerReference; // implement a singleton
+    }
+
     /**
      * <pre>
      * {@code
@@ -160,4 +184,94 @@ public class AudioPlayer {
         return player != null;
     }
 
+    /**
+     * Read the podcast status file
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * read the old podcast status and return it to the caller;
+     * }
+     * </pre>
+     */
+    public PodCasts readPodcastInfo(int IDOfPodcastToPlay) {
+        PodCasts oldPodcastInfo = new PodCasts();
+        try {
+            FileInputStream input = new FileInputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
+            ObjectInputStream in = new ObjectInputStream(input);
+            oldPodcastInfo = (PodCasts) in.readObject();
+            Log.d(TAG, oldPodcastInfo.toString());
+            in.close();
+        } catch (IOException e) {
+            Log.e(TAG, "file read for state.bin failed: " + e);
+        } catch (ClassNotFoundException e) {
+            Log.e(TAG, "error in class definition: " + e);
+        }
+        return oldPodcastInfo;
+    }
+
+    /**
+     * Write the podcast status file
+     *
+     * @param podcastInfo what to update file to
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * write the podcast status;
+     * }
+     * </pre>
+     */
+    public void writePodcastInfo(PodCasts podcastInfo) {
+        try {
+            FileOutputStream output = new FileOutputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
+            ObjectOutputStream out = new ObjectOutputStream(output);
+            out.writeObject(podcastInfo);
+            out.close();
+            Log.d(TAG,"podInfo updated in file: "+podcastInfo.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "file write failed: " + e);
+        }
+    }
+    /**
+     * Write the podcast status file using the internal status
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * write the podcast status;
+     * }
+     * </pre>
+     */
+    public void writePodcastInfo() {
+        try {
+            FileOutputStream output = new FileOutputStream(getExternalStorageDirectory() + "/" + DIRECTORY_PODCASTS + "/state.bin");
+            ObjectOutputStream out = new ObjectOutputStream(output);
+            out.writeObject(podcastInfo);
+            out.close();
+            Log.d(TAG,"podInfo updated in file: "+podcastInfo.toString());
+        } catch (IOException e) {
+            Log.e(TAG, "file write failed: " + e);
+        }
+    }
+    /**
+     * Update the contents of the podcastInfo object from an external copy
+     *
+     * @param podcastInfo new internal satte
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     *
+     * update private copy;
+     * }
+     * </pre>
+     */
+    public void updatePodcastInfo(PodCasts podcastInfo) {
+        this.podcastInfo = podcastInfo;
+    }
 }
