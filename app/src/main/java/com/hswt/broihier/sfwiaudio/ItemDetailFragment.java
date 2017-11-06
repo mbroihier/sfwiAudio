@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.hswt.broihier.sfwiaudio.sfwiaudio.audioFiles;
 
-import static java.lang.Thread.sleep;
 
 /**
  * Created by Mark Broihier 1/25/2017
@@ -28,7 +26,10 @@ public class ItemDetailFragment extends Fragment {
     private SeekBar seekBar;
     private static final String TAG="ItemDetailFragment";
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String ARG_SCREEN_WIDTH = "screen_width";
     private String cameFrom = "";
+    private final int REFERENCE_MARGIN = 200;
+    private final int REFERENCE_SCREEN_SIZE = 1328;
 
     private static audioFiles.PodCastItem mItem;
 
@@ -64,6 +65,16 @@ public class ItemDetailFragment extends Fragment {
             CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
             if (appBarLayout != null) {
                 appBarLayout.setTitle(mItem.content);
+                int margin = REFERENCE_MARGIN;
+                if (getArguments().containsKey(ARG_SCREEN_WIDTH)) {
+                    int screenSize = getArguments().getInt(ARG_SCREEN_WIDTH);
+                    if (screenSize == 0) {
+                        Log.d(TAG, "defaulting margin");
+                    } else {
+                        margin = margin * (screenSize) / REFERENCE_SCREEN_SIZE;
+                    }
+                }
+                appBarLayout.setExpandedTitleMarginStart(margin);
             }
         }
         cameFrom = "onCreate";

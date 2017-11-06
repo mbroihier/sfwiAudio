@@ -24,6 +24,8 @@ import java.util.List;
 public class ItemListActivity extends AppCompatActivity {
 
     private final String TAG = "ItemListActivity";
+    public static int screenWidth = 0;
+
     /**
      * in response to activity creation
      *
@@ -135,4 +137,12 @@ public class ItemListActivity extends AppCompatActivity {
             }
         }
     }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        Log.d(TAG,"Detailed Item Activity Focus change - width: " + this.getWindow().getCurrentFocus().getWidth());
+        screenWidth = this.getWindow().getCurrentFocus().getWidth();
+
+    }
+
 }

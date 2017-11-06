@@ -1,6 +1,5 @@
 package com.hswt.broihier.sfwiaudio;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,11 +7,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
+import android.view.MenuItem;
 
 
 import java.io.File;
 
 import static com.hswt.broihier.sfwiaudio.ItemDetailFragment.ARG_ITEM_ID;
+import static com.hswt.broihier.sfwiaudio.ItemDetailFragment.ARG_SCREEN_WIDTH;
 
 /**
  * Created by Mark Broihier
@@ -23,6 +24,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private static AudioPlayer audioPlayer = null;
     private static ItemDetailActivity itemDetailActivity = null;
     private static PodCasts podInfo = new PodCasts();
+    private int screenWidth = 0;
 
     /**
      * constructor
@@ -109,6 +111,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
         audioPlayer.play(this.getApplicationContext(), Uri.fromFile(file), position);
 
+        screenWidth = ItemListActivity.screenWidth;
+
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -116,6 +120,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             Bundle arguments = new Bundle();
             arguments.putString(ARG_ITEM_ID,
                     getIntent().getStringExtra(ARG_ITEM_ID));
+            arguments.putInt(ARG_SCREEN_WIDTH, screenWidth);
             ItemDetailFragment fragment = new ItemDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
@@ -124,6 +129,25 @@ public class ItemDetailActivity extends AppCompatActivity {
         } else {
             Log.e(TAG, "savedInstanceState should have been null in this design");
         }
+    }
+
+    /**
+     * respond to up arrow on title bar
+     *
+     * <pre>
+     *
+     * {@code
+     * Pseudo code:
+     * call popUP;
+     * }
+     * </pre>
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        Log.d(TAG, "up arrow/back - terminating play of podcast");
+        popUp();
+        return false;
     }
 
     /**
